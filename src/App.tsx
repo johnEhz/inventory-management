@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
+//PAGES
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
     <div className="App">
-      <h1 className='text-3xl bg-red-200 font-bold text-center p-4'>Hellol Word!!!</h1>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Navigate to={'/login'} />} />
+      </Routes>
     </div>
   );
 }
