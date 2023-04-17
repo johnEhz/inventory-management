@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+    font-family: sans-serif
+}
+
+.welcome-message {
+    font-family: cursive;
+    font-style: oblique;
+}
