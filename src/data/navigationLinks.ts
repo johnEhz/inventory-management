@@ -1,21 +1,22 @@
 import type { NavigationLink } from '../types'
-import { AiFillBank, AiFillAliwangwang, AiFillAlert } from 'react-icons/ai'
+import { AiOutlinePlus } from 'react-icons/ai'
+import { HiPencil } from 'react-icons/hi'
 
-const links:NavigationLink[] = [
+const links: NavigationLink[] = [
     {
-        name: "Home",
-        route: "/home",
-        icon: AiFillBank
+        name: "Crear inventario",
+        route: "/user/inventory/new",
+        icon: AiOutlinePlus
     },
     {
-        name: "About",
-        route: "/about",
-        icon: AiFillAliwangwang
+        name: "Gestionar marcas",
+        route: "/user/brands",
+        icon: HiPencil
     },
     {
-        name: "None",
-        route: "/none",
-        icon: AiFillAlert
+        name: "Gestionar proovedores",
+        route: "/user/providers",
+        icon: HiPencil
     }
 ]
 
