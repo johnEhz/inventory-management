@@ -5,18 +5,18 @@ import { HiPencil } from 'react-icons/hi'
 const links: NavigationLink[] = [
     {
         name: "Crear inventario",
-        route: "/user/inventory/new",
-        icon: AiOutlinePlus
+        route: "/app/inventory/new",
+        Icon: AiOutlinePlus
     },
     {
         name: "Gestionar marcas",
-        route: "/user/brands",
-        icon: HiPencil
+        route: "/app/brands",
+        Icon: HiPencil
     },
     {
         name: "Gestionar proovedores",
-        route: "/user/providers",
-        icon: HiPencil
+        route: "/app/providers",
+        Icon: HiPencil
     }
 ]
 
