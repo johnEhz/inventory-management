@@ -3,6 +3,7 @@ import axios from 'axios'
 
 const REGISTER_ROUTE = 'http://localhost:4000/api/auth/register'
 const LOGIN_ROUTE = 'http://localhost:4000/api/auth/login'
+const WHO_ROUTE = 'http://localhost:4000/api/auth/who'
 
 export const createUser = async (userRegister: UserRegistration) => {
     try {
@@ -40,5 +41,21 @@ export const loginUser = async (userRegister: UserLogin) => {
         else {
             throw new Error('Error Desconocido')
         }
+    }
+}
+
+export const whoUser = async (token: string) => {
+    try {
+        const response = await axios.get(WHO_ROUTE, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
+        return response
+    } catch (error: any) {
+        if (error.response) {
+            throw new Error(error.response.data.message)
+        }
+        throw new Error('Error Desconocido')
     }
 }
