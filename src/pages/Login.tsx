@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MdEmail, MdKey } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from '../hooks/useAuth'
 
 //Services
 import { loginUser } from "../services/auth/userServices";
@@ -18,6 +19,7 @@ const LOGIN_INITIAL_STATE: UserLogin = {
 };
 
 const Login = () => {
+  const { login } = useAuth()
   const [userLogin, setUserLogin] = useState<UserLogin>(LOGIN_INITIAL_STATE);
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,9 +33,8 @@ const Login = () => {
     try {
       e.preventDefault();
       const result = await loginUser(userLogin);
-      const { token, name } = result.data;
-      console.log(result.data)
-      localStorage.setItem("Authorization", token);
+      const { name } = result.data;
+      login && login(result.data)
       toast.success(`Bienvenido ${name}`);
     } catch (error: any) {
       toast.error(`${error}`);

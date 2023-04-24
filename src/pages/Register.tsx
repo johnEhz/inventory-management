@@ -3,6 +3,7 @@ import { MdEmail, MdKey } from "react-icons/md";
 import { RiPencilFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from '../hooks/useAuth'
 
 //Services
 import { createUser } from "../services/auth/userServices";
@@ -24,6 +25,7 @@ const REGISTER_INITIAL_STATE: UserRegistration = {
 };
 
 const Register = () => {
+  const { login } = useAuth()
   const [userRegistration, setUserRegistration] = useState<UserRegistration>(
     REGISTER_INITIAL_STATE
   );
@@ -43,8 +45,8 @@ const Register = () => {
         throw new Error("Las contraseñas ingresadas no coninciden");
       }
       const result = await createUser(userRegistration);
-      const { token, name } = result.data;
-      localStorage.setItem("Authorization", token);
+      const { name } = result.data;
+      login && login(result.data)
       toast.success(`Usuario ${name} registrado exitosamente`);
     } catch (error: any) {
       toast.error(`${error}`);
