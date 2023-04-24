@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineMenu, AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 import { MdOutlineExpandMore, MdExpandLess } from "react-icons/md";
+import { useAuth } from "../hooks/useAuth";
 
 interface HeaderProps {
   toggleShowNavigation: () => void;
@@ -9,6 +10,7 @@ interface HeaderProps {
 
 const Header = ({ toggleShowNavigation, showNavigation }: HeaderProps) => {
   const [showAccountSettings, setShowAccountSettings] = useState(false);
+  const { logout, user } = useAuth();
 
   const toggleShowMenu = () => {
     setShowAccountSettings(!showAccountSettings);
@@ -54,9 +56,15 @@ const Header = ({ toggleShowNavigation, showNavigation }: HeaderProps) => {
                 showAccountSettings ? "flex flex-col" : "hidden"
               } overflow-auto`}
             >
-              <li className="px-3 py-1 w-full">Configuración</li>
-              <li className="px-3 py-1 w-full">Cambiar tema</li>
-              <li className="px-3 py-1 w-full">Cerrar sesion</li>
+              <li className="px-3 py-1 w-full">{user?.name}</li>
+              <li className="px-3 py-1 w-full">
+                <button
+                  onClick={logout}
+                  className="bg-[#393565] w-full rounded p-1"
+                >
+                  Cerrar sesion
+                </button>
+              </li>
             </ul>
           </li>
         </ul>
