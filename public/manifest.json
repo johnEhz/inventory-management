@@ -1,7 +1,9 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [],
+  "short_name": "Inventory APP",
+  "name": "Inventory management Application",
+  "icons": [
+    "./icons/icon.png"
+  ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
