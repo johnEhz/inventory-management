@@ -7,6 +7,7 @@ import { InventoryRoute, Inventory } from "../types";
 import { useAuth } from "../hooks/useAuth";
 import { getInventories } from "../services/inventories/getInventories";
 import { FiRefreshCcw } from "react-icons/fi";
+import { toast } from 'react-toastify'
 
 interface NavigationProps {
   showNavigation: boolean;
@@ -37,13 +38,14 @@ const Navigation = ({ showNavigation }: NavigationProps) => {
           };
         })
       );
+      toast.success('Inventarios cargados!')
     })
     .catch((error) => console.error(error));
   };
 
   return (
     <div
-      className={`bg-[#11111D] text-[#FFFFFF] fixed transition-transform h-screen py-6 ${
+      className={`bg-[#11111D] text-[#FFFFFF] fixed transition-transform h-screen py-6 z-10 ${
         showNavigation ? "w-[250px]" : "w-0 hidden"
       }`}
     >
@@ -68,7 +70,7 @@ const Navigation = ({ showNavigation }: NavigationProps) => {
           </li>
           {links.map(({ route, Icon, name }, idx) => (
             <li key={idx} className="flex">
-              <NavLink className={LINK_STYLE} to={route}>
+              <NavLink className={({ isActive }) => (isActive ? 'bg-[#1D1B31] ' : 'inactive ') + LINK_STYLE} to={route}>
                 <Icon size={20} />
                 {name}
               </NavLink>
