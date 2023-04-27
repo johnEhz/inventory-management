@@ -41,11 +41,12 @@ export interface Provider {
 }
 
 export interface Product {
+    _id?: string
     _reference: string
     name: string
     description: string
-    brand: Brand
-    provider: Provider
+    brand?: Brand
+    provider?: Provider
     quantity: number
     price: number
     createdAt: string
@@ -57,13 +58,33 @@ export interface Product {
 export interface Inventory {
     _id: string
     _author: string
-    name: string
-    description: string
-    items: Product[]
-    createdAt: string
-    updatedAt: string
+    name?: string
+    description?: string
+    items: any
+    createdAt?: string
+    updatedAt?: string
 }
 
-export type InventoryRoute =  Omit<Inventory, '_author' | 'description' | 'items' | 'updatedAt'>
+export interface ProductCreation extends Omit<Product, '_id' | 'invest' | 'createdAt' | 'updatedAt'> {
+    brand?: {
+        name: string
+    },
+    provider?: {
+        name: string
+    }
+}
+
+export interface ProductDetailI {
+    product: Product | undefined,
+    show: boolean
+}
+
+export type InventoryRoute = Omit<Inventory, '_author' | 'description' | 'items' | 'updatedAt'>
 
 export type InventoryCreation = Omit<Inventory, '_id' | '_author' | 'items' | 'updatedAt' | 'createdAt'>
+
+export type InventoryUpdate = Omit<Inventory, '_id' | '_author' | 'updatedAt' | 'createdAt'>
+
+export type BrandCreation = Omit<Brand, '_id' | '_author' | 'updatedAt' | 'createdAt'>
+
+export type ProviderCreation = Omit<Provider, '_id' | '_author' | 'updatedAt' | 'createdAt'>
