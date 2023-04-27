@@ -1,4 +1,5 @@
-export const formatDate = (date: string) => {
+export const formatDate = (date: string | undefined) => {
+    if (!date) return 'Unknow'
     const dateTransformed = new Date(date)
     const day = dateTransformed.getDate()
     const month = transformMonthDay(dateTransformed.getMonth())
