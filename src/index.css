@@ -10,3 +10,79 @@
     font-family: cursive;
     font-style: oblique;
 }
+
+.table-wrapper {
+    overflow: auto;
+    width: 100%;
+    position: relative;
+    margin: auto;
+    max-width: 1200px;
+    z-index: 0;
+}
+
+table {
+    width: 100%;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-align: left;
+    color: rgb(107 114 128);
+}
+
+thead {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: rgb(156 163 175);
+    text-transform: uppercase;
+    background-color: #11111D;
+}
+
+.th-style {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.td-style {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.th-main {
+    white-space: nowrap;
+    font-weight: 700;
+    color: rgb(156 163 175)
+}
+
+.table-controls {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.action-button {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.edit-button {
+    color: rgb(253 186 116)
+}
+
+.edit-button:hover {
+    color: rgb(249 115 22)
+}
+
+.delete-button {
+    color: rgb(220 38 38)
+}
+
+.delete-button:hover {
+    color: rgb(185 28 28)
+}
