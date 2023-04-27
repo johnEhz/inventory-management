@@ -16,7 +16,7 @@ const Header = ({ toggleShowNavigation, showNavigation }: HeaderProps) => {
     setShowAccountSettings(!showAccountSettings);
   };
   return (
-    <header className="bg-gray-50 border-b w-full h-14 flex justify-center sticky top-0">
+    <header className="bg-gray-50 border-b w-full h-14 flex justify-center sticky top-0 z-10">
       <div className="max-w-[1400px] flex w-full items-center">
         <ul className="flex w-full justify-between px-5 items-center">
           <li className="flex flex-row gap-5">
