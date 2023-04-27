@@ -24,7 +24,7 @@ const AppLayout = () => {
         showNavigation={showNavigation}
       />
       <Navigation showNavigation={showNavigation} />
-      <main className="bg-gray-50 w-full h-screen min-h-[700px] sm:px-5 sm:py-12 px-3 py-7">
+      <main className="bg-gray-50 w-full h-full min-h-[900px] sm:px-5 sm:py-12 px-3 py-7">
         <Outlet />
       </main>
       <Footer />
