@@ -35,9 +35,6 @@ const CustomList = ({ data }: CustomListProps) => {
                 <th scope="col" className="th-style">
                   Fecha Modificación
                 </th>
-                <th scope="col" className="th-style">
-                  Acciones
-                </th>
               </tr>
             </thead>
             <tbody>
@@ -50,20 +47,6 @@ const CustomList = ({ data }: CustomListProps) => {
                   <td className="td-style">{item.name}</td>
                   <td className="td-style">{formatDate(item.createdAt)}</td>
                   <td className="td-style">{formatDate(item.updatedAt)}</td>
-                  <td className="td-style">
-                    <ul className="table-controls">
-                      <li>
-                        <button className="action-button edit-button">
-                          <FaEdit size={20} />
-                        </button>
-                      </li>
-                      <li>
-                        <button className="action-button delete-button">
-                          <RiDeleteBin6Line size={20} />
-                        </button>
-                      </li>
-                    </ul>
-                  </td>
                 </tr>
               ))}
             </tbody>
