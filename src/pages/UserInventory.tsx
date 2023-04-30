@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Inventory } from "../types";
+import { Inventory, ProductModal, Product } from "../types";
 import { useAuth } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import { formatDate } from "../utils/formatDate";
@@ -12,19 +12,30 @@ import ProductForm from "../components/ProductForm";
 
 import { getInventoryById } from "../services/inventories/getInventoryById";
 import { deleteInventoryById } from "../services/inventories/deleteInventoryById";
+import { getProducts } from "../services/products/getProducts";
+
+const PRODUCT_MODAL_INITIAL_STATE: ProductModal = {
+  show: false,
+  productId: undefined,
+};
 
 const UserInventory = () => {
   const [userInventory, setUserInventory] = useState<Inventory>();
-  const [showProductModal, setShowProductModal] = useState(false);
+  const [userProducts, setUserProducts] = useState<Product[]>();
+  const [showProductModal, setShowProductModal] = useState<ProductModal>(
+    PRODUCT_MODAL_INITIAL_STATE
+  );
   const { user, logout } = useAuth();
   const { inventoryId } = useParams();
   const navigate = useNavigate();
+
   useEffect(() => {
     try {
       if (!user?.token) {
         throw new Error("No autorizado!");
       }
       loadInventoryById();
+      loadInventoryProducts();
     } catch (error) {
       toast.error("Su sesión ha expirado.");
       logout && logout();
@@ -38,6 +49,19 @@ const UserInventory = () => {
       setUserInventory(res.data);
     });
   };
+
+  const loadInventoryProducts = async () => {
+    if (!inventoryId || !user?.token) return;
+
+    await getProducts(user.token, inventoryId).then((res) => {
+      setUserProducts(res.data);
+    });
+  };
+
+  const reloadData = async () => {
+    await loadInventoryById()
+    await loadInventoryProducts()
+  }
 
   const deleteInventory = async () => {
     if (!user?.token) return;
@@ -54,17 +78,20 @@ const UserInventory = () => {
     toast.success("Inventario eliminado");
   };
 
-  const toggleShowProductModal = () => {
-    setShowProductModal(!showProductModal);
+  const toggleShowProductModal = (id?: string) => {
+    setShowProductModal({
+      productId: id ? id : undefined,
+      show: !showProductModal.show,
+    });
   };
 
   return (
     <>
       <ProductForm
         toggleShowProductModal={toggleShowProductModal}
-        inventory={userInventory}
-        reloadInventory={loadInventoryById}
-        show={showProductModal}
+        reloadData={reloadData}
+        show={showProductModal.show}
+        productId={showProductModal.productId}
       />
       <div className="sm:px-4">
         <div className="flex flex-col gap-5 sm:flex-row justify-between">
@@ -110,15 +137,14 @@ const UserInventory = () => {
             </div>
             <div className="text-gray-700 flex flex-col">
               <h3 className="font-bold">Info</h3>
-              <span>{userInventory?.items.length} productos registrados.</span>
+              <span>{userProducts?.length} productos registrados.</span>
               <span>
                 Inversión total:{" "}
-                {userInventory?.items
-                  ? userInventory.items
-                      .map((item: any) => item.invest)
+                {userProducts
+                  ? userProducts
+                      .map((product: Product) => product.invest)
                       .reduce(
-                        (acum: any, current: any) =>
-                          Number(acum) + Number(current),
+                        (acum: any, current: any ) => acum + current,
                         0
                       )
                   : 0}
@@ -129,7 +155,7 @@ const UserInventory = () => {
             <ul className="flex flex-col gap-2">
               <li>
                 <button
-                  onClick={toggleShowProductModal}
+                  onClick={() => toggleShowProductModal()}
                   className="bg-green-400 transition-colors p-2 rounded text-white w-[180px] flex flex-row justify-center items-center gap-2 hover:bg-green-600"
                 >
                   <AiOutlinePlus />
@@ -149,7 +175,10 @@ const UserInventory = () => {
           </div>
         </div>
         <div className="flex flex-col justify-center">
-          <ProductList products={userInventory?.items} />
+          <ProductList
+            toggleShowProductModal={toggleShowProductModal}
+            products={userProducts}
+          />
         </div>
       </div>
     </>
