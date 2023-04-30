@@ -43,29 +43,29 @@ export interface Provider {
 export interface Product {
     _id?: string
     _reference: string
+    _inventory?: string
     name: string
     description: string
     brand?: Brand
     provider?: Provider
     quantity: number
     price: number
-    createdAt: string
-    updatedAt: string
-    invest: number
+    invest?: number
+    createdAt?: string
+    updatedAt?: string
 
 }
 
 export interface Inventory {
-    _id: string
+    _id?: string
     _author: string
-    name?: string
-    description?: string
-    items: any
+    name: string
+    description: string
     createdAt?: string
     updatedAt?: string
 }
 
-export interface ProductCreation extends Omit<Product, '_id' | 'invest' | 'createdAt' | 'updatedAt'> {
+export interface ProductCreation extends Omit<Product, '_id' | 'createdAt' | 'updatedAt'> {
     brand?: {
         name: string
     },
@@ -78,6 +78,12 @@ export interface ProductDetailI {
     product: Product | undefined,
     show: boolean
 }
+
+export interface ProductModal {
+    productId: string | undefined,
+    show: boolean
+}
+
 
 export type InventoryRoute = Omit<Inventory, '_author' | 'description' | 'items' | 'updatedAt'>
 
