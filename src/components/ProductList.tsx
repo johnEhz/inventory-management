@@ -4,11 +4,12 @@ import { AiOutlineWarning } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-//PRODUCT DETAIL
+//DETAIL
 import ProductDetail from "./ProductDetail";
 
 interface ProductListProps {
   products: Product[] | undefined;
+  toggleShowProductModal: (id?: string) => void;
 }
 
 const DETAIL_INITIAL_STATE: ProductDetailI = {
@@ -16,7 +17,10 @@ const DETAIL_INITIAL_STATE: ProductDetailI = {
   product: undefined,
 };
 
-const ProductList = ({ products }: ProductListProps) => {
+const ProductList = ({
+  products,
+  toggleShowProductModal,
+}: ProductListProps) => {
   const [showDetail, setShowDetail] =
     useState<ProductDetailI>(DETAIL_INITIAL_STATE);
 
@@ -29,7 +33,11 @@ const ProductList = ({ products }: ProductListProps) => {
 
   return (
     <>
-      <ProductDetail show={showDetail.show} product={showDetail.product} toggleShow={toggleShowDetail} />
+      <ProductDetail
+        show={showDetail.show}
+        product={showDetail.product}
+        toggleShow={toggleShowDetail}
+      />
       <h2 className="text-center py-3 font-bold text-lg">
         Productos registrados
       </h2>
@@ -73,7 +81,7 @@ const ProductList = ({ products }: ProductListProps) => {
             <tbody>
               {products.map((item, idx) => (
                 <tr
-                  onClick={() => toggleShowDetail(item)}
+                  onClick={(e) => toggleShowDetail(item)}
                   key={item._id}
                   className="border-b hover:bg-green-100 cursor-pointer transition-colors"
                 >
@@ -99,7 +107,12 @@ const ProductList = ({ products }: ProductListProps) => {
                   <td>
                     <ul className="table-controls">
                       <li>
-                        <button className="action-button edit-button">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleShowProductModal(item._id)}}
+                          className="action-button edit-button"
+                        >
                           <FaEdit size={20} />
                         </button>
                       </li>
