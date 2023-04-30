@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ProductCreation, Product, Brand, Provider, Inventory } from "../types";
+import { ProductCreation, Product, Brand, Provider } from "../types";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { toast } from "react-toastify";
@@ -7,17 +7,18 @@ import { toast } from "react-toastify";
 //SERVICES
 import { getBrands } from "../services/brands/getBrands";
 import { getProviders } from "../services/providers/getProviders";
-import { updateInventoryById } from "../services/inventories/updateInventoryById";
+import { getProductById } from "../services/products/getProductById";
+import { createProduct } from "../services/products/createProduct";
+import { updateProduct } from "../services/products/updateProduct";
 
 //MODAL
 import CustomModal from "./CustomModal";
 
 interface ProductModalFormProps {
-  id?: string;
-  inventory?: Inventory;
-  reloadInventory: () => void;
+  productId?: string;
+  reloadData: () => void;
   toggleShowProductModal: () => void;
-  show: boolean
+  show: boolean;
 }
 
 const INPUT_STYLE = "px-3 py-2 rounded outline-none text-normal border";
@@ -34,11 +35,10 @@ const PRODUCT_INITIAL_STATE: ProductCreation = {
 };
 
 const ProductModalForm = ({
-  id,
-  inventory,
-  reloadInventory,
+  productId,
+  reloadData,
   toggleShowProductModal,
-  show
+  show,
 }: ProductModalFormProps) => {
   const [brands, setBrands] = useState<Brand[]>();
   const [providers, setProviders] = useState<Provider[]>();
@@ -50,12 +50,18 @@ const ProductModalForm = ({
 
   useEffect(() => {
     try {
-      loadBrands();
-      loadProviders();
+      if (!productId) {
+        setProduct(PRODUCT_INITIAL_STATE);
+        loadBrands();
+        loadProviders();
+        return;
+      }
+
+      loadProduct();
     } catch (error) {
       toast.error("Error al cargar datos...");
     }
-  }, []);
+  }, [productId, inventoryId]);
 
   const loadBrands = () => {
     if (!user?.token) throw new Error("No Autorizado");
@@ -70,6 +76,13 @@ const ProductModalForm = ({
 
     getProviders(user.token).then((res) => {
       setProviders(res.data);
+    });
+  };
+
+  const loadProduct = () => {
+    if (!inventoryId || !productId || !user?.token) return;
+    getProductById(user.token, productId, inventoryId).then((res) => {
+      setProduct(res.data);
     });
   };
 
@@ -99,29 +112,44 @@ const ProductModalForm = ({
   const handleAddProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (!user?.token) throw new Error("No autorizado");
+      if (!user?.token) throw new Error();
+      if (!productId) {
+        await createProduct(user.token, {
+          ...product,
+          _inventory: inventoryId,
+        });
+        toast.success("Nuevo producto registrado");
+      } else {
+        await updateProduct(
+          user.token,
+          {
+            _inventory: inventoryId,
+            ...product,
+            invest: product.price * product.quantity,
+          },
+          productId
+        );
+        toast.success("Producto actualizado correctamente.");
+      }
 
-      await updateInventoryById(user?.token, inventoryId, {
-        name: inventory?.name,
-        description: inventory?.description,
-        items: [...inventory?.items, product],
-      });
-
-      await reloadInventory();
-
-      toggleShowProductModal();
-
-      toast.success(`Producto con referencia ${product._reference} añadido.`);
+      await reloadData();
       setProduct(PRODUCT_INITIAL_STATE);
+      toggleShowProductModal();
+      
     } catch (error) {
-      toast.error("Error al registrar el producto");
+      toast.error("Error al registrar el producto, compruebe su referencia.");
     }
   };
 
   return (
     <CustomModal min_heigth="min-h-[900px]" show={show}>
       <div className="bg-white flex flex-col gap-5 p-2 sm:px-5 py-8 rounded max-w-[500px] w-full">
-        <h2 className="text-center text-2xl">Nuevo Producto</h2>
+        <h2 className="text-center text-2xl">
+          {productId ? "Modificar Producto" : "Nuevo Producto"}
+        </h2>
+        {productId ? (
+          <h4 className="italic text-xs text-gray-500">ID: {productId} </h4>
+        ) : null}
         <form onSubmit={handleAddProduct} className="flex flex-col gap-5">
           <ul className="flex flex-col gap-7">
             <li className={CONTROL_STYLE}>
@@ -224,13 +252,20 @@ const ProductModalForm = ({
           </ul>
           <ul className="flex flex-col gap-2 text-center">
             <li>
-              <button className="bg-green-500 text-white w-full p-2 rounded">
-                Crear
+              <button
+                className={`${
+                  productId ? "bg-blue-500" : "bg-green-500"
+                } text-white w-full p-2 rounded`}
+              >
+                {productId ? "Guardar" : "Crear"}
               </button>
             </li>
             <li>
               <button
-                onClick={toggleShowProductModal}
+                onClick={() => {
+                  setProduct(PRODUCT_INITIAL_STATE);
+                  toggleShowProductModal();
+                }}
                 className="text-red-500 p-2 rounded"
               >
                 Cancelar
