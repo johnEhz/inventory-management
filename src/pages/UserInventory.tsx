@@ -100,7 +100,7 @@ const UserInventory = () => {
               <h2 className="text-2xl font-bold text-gray-700">
                 Información del inventario
               </h2>
-              <button onClick={loadInventoryById}>
+              <button onClick={reloadData}>
                 <FiRefreshCcw />
               </button>
             </div>
@@ -178,6 +178,7 @@ const UserInventory = () => {
           <ProductList
             toggleShowProductModal={toggleShowProductModal}
             products={userProducts}
+            reloadData={reloadData}
           />
         </div>
       </div>
