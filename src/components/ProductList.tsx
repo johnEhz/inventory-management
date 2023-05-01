@@ -3,13 +3,20 @@ import { Product, ProductDetailI } from "../types";
 import { AiOutlineWarning } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 //DETAIL
 import ProductDetail from "./ProductDetail";
 
+//DELETE SERVICE
+import { deleteProduct } from "../services/products/deleteProduct";
+import { toast } from "react-toastify";
+
 interface ProductListProps {
   products: Product[] | undefined;
   toggleShowProductModal: (id?: string) => void;
+  reloadData: () => void;
 }
 
 const DETAIL_INITIAL_STATE: ProductDetailI = {
@@ -20,15 +27,36 @@ const DETAIL_INITIAL_STATE: ProductDetailI = {
 const ProductList = ({
   products,
   toggleShowProductModal,
+  reloadData,
 }: ProductListProps) => {
   const [showDetail, setShowDetail] =
     useState<ProductDetailI>(DETAIL_INITIAL_STATE);
+  const { inventoryId } = useParams();
+  const { user } = useAuth();
 
   const toggleShowDetail = (product?: Product) => {
     setShowDetail({
       show: !showDetail.show,
       product: product ? product : undefined,
     });
+  };
+
+  const handleDeleteProduct = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    productId?: string
+  ) => {
+    try {
+      e.stopPropagation();
+      if (!user?.token) throw new Error("No autorizado");
+      if (!productId) throw new Error("Acción imposible");
+      if (!inventoryId) throw new Error("No se encontró el inventario");
+      await deleteProduct(user.token, productId, inventoryId).then(async () => {
+        await reloadData();
+      });
+      toast.success('Producto eliminado')
+    } catch (error: any) {
+      console.error(error.message);
+    }
   };
 
   return (
@@ -109,15 +137,19 @@ const ProductList = ({
                       <li>
                         <button
                           onClick={(e) => {
-                            e.stopPropagation()
-                            toggleShowProductModal(item._id)}}
+                            e.stopPropagation();
+                            toggleShowProductModal(item._id);
+                          }}
                           className="action-button edit-button"
                         >
                           <FaEdit size={20} />
                         </button>
                       </li>
                       <li>
-                        <button className="action-button delete-button">
+                        <button
+                          onClick={(e) => handleDeleteProduct(e, item._id)}
+                          className="action-button delete-button"
+                        >
                           <RiDeleteBin6Line size={20} />
                         </button>
                       </li>
